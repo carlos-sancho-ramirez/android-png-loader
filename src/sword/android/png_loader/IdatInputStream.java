@@ -8,6 +8,11 @@ import java.util.NoSuchElementException;
 
 import junit.framework.Assert;
 
+/**
+ * @brief InputStream that has the ability to interconnects different IDAT chunks
+ * in a transparent way for the decoder.
+ * @author Carlos Sancho Ramirez
+ */
 public class IdatInputStream extends InputStream {
 
     private static final byte[] PNG_IDAT_TYPE = {

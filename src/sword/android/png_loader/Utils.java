@@ -3,6 +3,10 @@ package sword.android.png_loader;
 import java.io.IOException;
 import java.io.InputStream;
 
+/**
+ * @brief General utilities that can be reused for other purposes.
+ * @author Carlos Sancho Ramirez
+ */
 public final class Utils {
 
     // No instances of this class are allowed
@@ -20,32 +24,6 @@ public final class Utils {
 
             offset += value;
         }
-    }
-
-    public static int loadBigEndianIntWithSubFilter(InputStream inStream, final byte[] refInt) throws IOException, UnexpectedEndOfFileException {
-        byte[] diffData = new byte[refInt.length];
-        int readBytes = 0;
-        while(readBytes < diffData.length) {
-            int readNow = inStream.read(diffData, readBytes, diffData.length - readBytes);
-            readBytes += readNow;
-            if (readNow < 0) {
-                throw new UnexpectedEndOfFileException();
-            }
-        }
-
-        int result = 0;
-        int value;
-        for(int i=0; i<diffData.length; i++) {
-            refInt[i] += diffData[i];
-
-            value = refInt[i];
-            if (value < 0) {
-                value += 256;
-            }
-            result = (result << 8) + value;
-        }
-
-        return result;
     }
 
     public static int loadBigEndianInt(InputStream inStream, int bytes) throws IOException, UnexpectedEndOfFileException {
@@ -107,5 +85,24 @@ public final class Utils {
 
     public static byte unsignedAverage(byte... bytes) {
         return (byte)(unsignedSum(bytes) / bytes.length);
+    }
+
+    public static byte paethPrediction(byte left, byte above, byte leftAbove) {
+        int intLeft = (left<0)? left + 256 : left;
+        int intAbove = (above<0)? above + 256 : above;
+        int intLeftAbove = (leftAbove<0)? leftAbove + 256 : leftAbove;
+
+        int p = intLeft + intAbove - intLeftAbove;
+        int pLeft = Math.abs(p - intLeft);
+        int pAbove = Math.abs(p - intAbove);
+        int pLeftAbove = Math.abs(p - intLeftAbove);
+
+        if (pLeft <= pAbove && pLeft <= pLeftAbove) {
+            return left;
+        }else if (pAbove <= pLeftAbove) {
+            return above;
+        }
+
+        return leftAbove;
     }
 }

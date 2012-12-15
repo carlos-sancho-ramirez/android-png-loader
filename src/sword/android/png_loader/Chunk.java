@@ -6,6 +6,9 @@ import java.io.InputStream;
 import java.util.Arrays;
 
 /**
+ * @brief Object oriented programming basic representation for a single Chunk.
+ * @author Carlos Sancho Ramirez
+ *
  * A Chunk is composed by:
  * * A 32-bit big-endian integer which says the length OF THE DATA
  *   (it means excluding everything that is not data)
